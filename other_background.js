@@ -1,3 +1,5 @@
+env = env || { configs: { url : '', apikey : ''}};
+
 const config = {
     subtree: true,
     attributeOldValue: true
@@ -5,11 +7,31 @@ const config = {
 
   let done = false;
 
-  function open_articles() {
+  async function postJSON(data) {
+    try {
+
+      const response = await fetch(env.configs.url, {
+        method: "PUT", // or 'PUT'
+        headers: {
+          "Content-Type": "application/json",
+          "ApiKey" : env.configs.apikey
+        },
+        body: JSON.stringify(data),
+      });
+  
+      const result = await response.json();
+      console.log("Success:", result);
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  }
+
+  async function open_articles() {
     console.log('opening');
-    document.querySelectorAll('._ae5q._akdo').forEach(function(x) { if (x.querySelector('div[role=button]')) {
+    const result = await postJSON({ content : 'Hello from Extension', producer : 'me', createdon : new Date(), });
+    /*document.querySelectorAll('._ae5q._akdo').forEach(function(x) { if (x.querySelector('div[role=button]')) {
         x.querySelector('div[role=button]').dispatchEvent(new Event('click', { bubbles: true}))
-    }});
+    }});*/
   }
 
   function callback(mutationList) {
